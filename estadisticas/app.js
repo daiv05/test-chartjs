@@ -293,6 +293,165 @@ function generateColors(count) {
     .map((_, i) => colors[i % colors.length]);
 }
 
+function exportToImage(canvas, questionTitle) {
+  // Crear un canvas temporal con fondo blanco y espacio para el título
+  const tempCanvas = document.createElement('canvas');
+  const originalWidth = canvas.width;
+  const originalHeight = canvas.height;
+  const titleHeight = 40; // Espacio para el título
+  
+  tempCanvas.width = originalWidth;
+  tempCanvas.height = originalHeight + titleHeight;
+  
+  const ctx = tempCanvas.getContext('2d');
+  
+  // Establecer fondo blanco
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+  
+  // Dibujar el título
+  ctx.fillStyle = '#000000';
+  ctx.font = 'bold 16px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(questionTitle, tempCanvas.width / 2, 25);
+  
+  // Dibujar el gráfico original
+  ctx.drawImage(canvas, 0, titleHeight, originalWidth, originalHeight);
+  
+  // Crear el enlace de descarga
+  const link = document.createElement('a');
+  link.download = `${questionTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.png`;
+  link.href = tempCanvas.toDataURL('image/png');
+  link.click();
+}
+
+function exportToExcel(data, questionTitle) {
+  const ws = XLSX.utils.json_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Datos");
+  XLSX.writeFile(wb, `${questionTitle.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.xlsx`);
+}
+
+function exportToPDF(canvas, questionTitle, questionData) {
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF();
+
+  // Añadir título
+  pdf.setFontSize(16);
+  pdf.text(questionTitle, 20, 20);
+
+  // Añadir gráfico
+  const imgData = canvas.toDataURL("image/png");
+  pdf.addImage(imgData, "PNG", 20, 40, 170, 100);
+
+  // Añadir datos tabulares si existen
+  if (questionData && questionData.length > 0) {
+    pdf.addPage();
+    pdf.setFontSize(12);
+    pdf.text("Datos detallados", 20, 20);
+
+    let yPos = 40;
+    questionData.forEach((row, index) => {
+      pdf.text(`${Object.values(row).join(", ")}`, 20, yPos);
+      yPos += 10;
+    });
+  }
+
+  pdf.save(`${questionTitle.replace(/[^a-z0-9]/gi, "_").toLowerCase()}.pdf`);
+}
+
+function exportToWord(questionTitle, canvas, questionData) {
+    // Asegurarnos de que docx está disponible
+    if (!window.docx) {
+        console.error('La librería docx no está cargada');
+        alert('Error al exportar a Word. Por favor, intente de nuevo.');
+        return;
+    }
+
+    const { Document, Paragraph, TextRun, ImageRun, Packer } = window.docx;
+
+    // Convertir la imagen a base64
+    const imageData = canvas.toDataURL("image/png").split(',')[1];
+
+    // Crear el documento
+    const doc = new Document({
+        sections: [{
+            properties: {},
+            children: [
+                new Paragraph({
+                    children: [
+                        new TextRun({
+                            text: questionTitle,
+                            bold: true,
+                            size: 32
+                        })
+                    ]
+                }),
+                new Paragraph({
+                    children: [
+                        new ImageRun({
+                            data: imageData,
+                            transformation: {
+                                width: 600,
+                                height: 400
+                            }
+                        })
+                    ]
+                })
+            ]
+        }]
+    });
+
+    // Exportar el documento
+    Packer.toBlob(doc).then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${questionTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.docx`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+    }).catch(error => {
+        console.error('Error al generar el documento Word:', error);
+        alert('Error al exportar a Word. Por favor, intente de nuevo.');
+    });
+}
+
+function createExportButtons(container, chart, questionTitle, questionData) {
+  const buttonsContainer = document.createElement("div");
+  buttonsContainer.className = "export-buttons";
+
+  // Botón de exportar imagen
+  const imageButton = document.createElement("button");
+  imageButton.className = "export-button image";
+  imageButton.innerHTML = '<i class="fas fa-image"></i> Imagen';
+  imageButton.onclick = () => exportToImage(chart.canvas, questionTitle);
+
+  // Botón de exportar Excel
+  const excelButton = document.createElement("button");
+  excelButton.className = "export-button excel";
+  excelButton.innerHTML = '<i class="fas fa-file-excel"></i> Excel';
+  excelButton.onclick = () => exportToExcel(questionData, questionTitle);
+
+  // Botón de exportar PDF
+  const pdfButton = document.createElement("button");
+  pdfButton.className = "export-button pdf";
+  pdfButton.innerHTML = '<i class="fas fa-file-pdf"></i> PDF';
+  pdfButton.onclick = () => exportToPDF(chart.canvas, questionTitle, questionData);
+
+  // Botón de exportar Word
+  const wordButton = document.createElement("button");
+  wordButton.className = "export-button word";
+  wordButton.innerHTML = '<i class="fas fa-file-word"></i> Word';
+  wordButton.onclick = () => exportToWord(questionTitle, chart.canvas, questionData);
+
+  buttonsContainer.appendChild(imageButton);
+  buttonsContainer.appendChild(excelButton);
+  buttonsContainer.appendChild(pdfButton);
+  buttonsContainer.appendChild(wordButton);
+
+  container.appendChild(buttonsContainer);
+}
+
 function displayQuestion(question) {
   const container = document.getElementById("questions-container");
   const questionCard = document.createElement("div");
@@ -335,7 +494,21 @@ function displayQuestion(question) {
       chartType = "stacked";
     }
 
-    createChart(chartContainer, question.graphData, chartType);
+    const chart = createChart(chartContainer, question.graphData, chartType);
+
+    // Preparar datos para exportación
+    const exportData = question.graphData.labels.map((label, index) => {
+      const dataPoint = {
+        Opción: label,
+      };
+      question.graphData.datasets.forEach((dataset) => {
+        dataPoint[dataset.label] = dataset.data[index];
+      });
+      return dataPoint;
+    });
+
+    // Crear botones de exportación
+    createExportButtons(chartContainer, chart, question.shortQuestion, exportData);
 
     // Si hay respuestas en "otros", mostrarlas
     if (

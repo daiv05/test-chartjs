@@ -41,6 +41,53 @@ header {
 .chart-container {
     margin: 20px 0;
     max-width: 600px;
+    position: relative;
+}
+
+.export-buttons {
+    margin: 10px 0;
+    display: flex;
+    gap: 10px;
+}
+
+.export-button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.export-button i {
+    font-size: 16px;
+}
+
+.export-button.image {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.export-button.excel {
+    background-color: #217346;
+    color: white;
+}
+
+.export-button.pdf {
+    background-color: #FF5722;
+    color: white;
+}
+
+.export-button.word {
+    background-color: #2B579A;
+    color: white;
+}
+
+.export-button:hover {
+    opacity: 0.9;
 }
 
 .text-responses {
