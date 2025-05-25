@@ -1,0 +1,177 @@
+{
+  "success": true,
+  "message": "Estadísticas de la encuesta obtenidas exitosamente",
+  "data": {
+    "formGeneralInfo": {
+      "idEncuesta": 1,
+      "titulo": "Ambiente laboral",
+      "descripcion": "Esta encuesta busca que... y tambien lograr... aaaaaaaaaaaaa...",
+      "createdBy": "DAVID DERAS",
+      "totalRespuestas": 1
+    },
+    "formStats": [
+      {
+        "idPregunta": 1,
+        "nombre": "Texto corto",
+        "type": "short_text",
+        "shortQuestion": "Pregunta corta 1",
+        "allowOtherOption": false,
+        "textResults": ["Respuesta de pregunta corta 1"],
+        "graphData": null
+      },
+      {
+        "idPregunta": 2,
+        "nombre": "Texto largo",
+        "type": "long_text",
+        "shortQuestion": "Pregunta larga 2",
+        "allowOtherOption": false,
+        "textResults": ["Respuesta de pregunta larga 2"],
+        "graphData": null
+      },
+      {
+        "idPregunta": 3,
+        "nombre": "Selección múltiple",
+        "type": "multiple_choice",
+        "shortQuestion": "Pregunta seleccion multiple 3",
+        "allowOtherOption": false,
+        "textResults": [],
+        "graphData": {
+          "labels": ["Opcion 1", "Opcion 2", "Opcion 3"],
+          "datasets": [
+            {
+              "label": "Cantidad de respuestas",
+              "data": [1, 0, 1]
+            }
+          ]
+        }
+      },
+      {
+        "idPregunta": 4,
+        "nombre": "Selección múltiple",
+        "type": "multiple_choice",
+        "shortQuestion": "Pregunta seleccion multiple 4 --OTROS--",
+        "allowOtherOption": true,
+        "textResults": ["Seleccion multiple: Respuesta Otros"],
+        "graphData": {
+          "labels": ["Opcion 1", "Opcion 2"],
+          "datasets": [
+            {
+              "label": "Cantidad de respuestas",
+              "data": [0, 0]
+            }
+          ]
+        }
+      },
+      {
+        "idPregunta": 5,
+        "nombre": "Selección única",
+        "type": "single_choice",
+        "shortQuestion": "Pregunta seleccion unica 5",
+        "allowOtherOption": false,
+        "textResults": [],
+        "graphData": {
+          "labels": ["Opcion 1", "Opcion 2", "Opcion 3"],
+          "datasets": [
+            {
+              "label": "Cantidad de respuestas",
+              "data": [1, 0, 0]
+            }
+          ]
+        }
+      },
+      {
+        "idPregunta": 6,
+        "nombre": "Selección única",
+        "type": "single_choice",
+        "shortQuestion": "Pregunta seleccion unica 6 --OTROS--",
+        "allowOtherOption": true,
+        "textResults": ["Seleccion unica: Respuesta Otros"],
+        "graphData": {
+          "labels": ["Opcion 1", "Opcion 2", "Opcion 3"],
+          "datasets": [
+            {
+              "label": "Cantidad de respuestas",
+              "data": [0, 0, 0]
+            }
+          ]
+        }
+      },
+      {
+        "idPregunta": 7,
+        "nombre": "Ordenamiento/Ranking",
+        "type": "ranking",
+        "shortQuestion": "Pregunta ordenamiento 7",
+        "allowOtherOption": false,
+        "textResults": null,
+        "graphData": {
+          "labels": ["Opcion 1", "Opcion 2", "Opcion 3"],
+          "datasets": [
+            {
+              "label": "Opción 1",
+              "data": [1, 0, 0]
+            },
+            {
+              "label": "Opción 2",
+              "data": [0, 0, 1]
+            },
+            {
+              "label": "Opción 3",
+              "data": [0, 1, 0]
+            }
+          ]
+        }
+      },
+      {
+        "idPregunta": 8,
+        "nombre": "Escala numérica",
+        "type": "numeric_scale",
+        "shortQuestion": "Pregunta escala numerica 8",
+        "allowOtherOption": false,
+        "textResults": null,
+        "graphData": {
+          "labels": [3],
+          "datasets": [
+            {
+              "label": "Frecuencia",
+              "data": [1]
+            }
+          ]
+        }
+      },
+      {
+        "idPregunta": 9,
+        "nombre": "Escala/Escala Likert",
+        "type": "likert_scale",
+        "shortQuestion": "Pregunta escala likert 9",
+        "allowOtherOption": false,
+        "textResults": [],
+        "graphData": {
+          "labels": ["Opcion 1", "Opcion 2", "Opcion 3"],
+          "datasets": [
+            {
+              "label": "Cantidad de respuestas",
+              "data": [0, 0, 1]
+            }
+          ]
+        }
+      },
+      {
+        "idPregunta": 10,
+        "nombre": "Falso/Verdadero",
+        "type": "true_false",
+        "shortQuestion": "Pregunta falso / verdadero numerica 10",
+        "allowOtherOption": false,
+        "textResults": [],
+        "graphData": {
+          "labels": ["Verdadero", "Falso"],
+          "datasets": [
+            {
+              "label": "Cantidad de respuestas",
+              "data": [1, 0]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
